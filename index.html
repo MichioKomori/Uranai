@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>古代の血脈・守護霊獣占い</title>
+    
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/themes/dark.css">
+    
+    <style>
+        body {
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            background-color: #1a1a2e;
+            color: #e2e2e2;
+            text-align: center;
+            padding: 50px 20px;
+        }
+        .container {
+            max-width: 500px;
+            margin: 0 auto;
+            background: #16162a;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 4px 25px rgba(0,0,0,0.5);
+            border: 1px solid #4834d4;
+        }
+        h1 {
+            color: #f1c40f;
+            font-size: 24px;
+            margin-bottom: 20px;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+        }
+        p {
+            color: #b2bec3;
+        }
+        /* 日付入力欄のデザイン */
+        .picker-container {
+            position: relative;
+            width: 80%;
+            margin: 0 auto 20px auto;
+        }
+        input[type="text"] {
+            padding: 12px;
+            font-size: 16px;
+            border: 2px solid #4834d4;
+            background-color: #0f0f1e;
+            color: #fff;
+            border-radius: 5px;
+            width: 100%;
+            text-align: center;
+            box-sizing: border-box;
+            cursor: pointer;
+        }
+        input[type="text"]:focus {
+            outline: none;
+            border-color: #f1c40f;
+        }
+        button {
+            background: linear-gradient(135deg, #6c5ce7, #4834d4);
+            color: white;
+            border: none;
+            padding: 12px 35px;
+            font-size: 16px;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: 0.3s;
+            box-shadow: 0 4px 15px rgba(108, 92, 231, 0.4);
+        }
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(108, 92, 231, 0.6);
+        }
+        #result {
+            margin-top: 30px;
+            padding: 20px;
+            border-radius: 10px;
+            background-color: #242442;
+            border: 1px dashed #f1c40f;
+            display: none;
+        }
+        .beast-name {
+            font-size: 28px;
+            font-weight: bold;
+            color: #f1c40f;
+            margin-bottom: 10px;
+            letter-spacing: 2px;
+        }
+        /* カレンダー内の選択された日の色をゴールド系にカスタム */
+        .flatpickr-day.selected {
+            background: #4834d4 !important;
+            border-color: #f1c40f !important;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>古代の血脈・守護霊獣占い</h1>
+    <p>あなたの生年月日から、魂に宿る霊獣を呼び覚まします</p>
+    
+    <div class="picker-container">
+        <input type="text" id="birthday" placeholder="ここをタップして日付を選択">
+    </div>
+    
+    <button onclick="fortuneTell()">霊獣を召喚する</button>
+
+    <div id="result">
+        <p>あなたに宿る守護霊獣は...</p>
+        <div id="beastName" class="beast-name"></div>
+        <p id="beastDesc" style="line-height: 1.6;"></p>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+<script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/ja.js"></script>
+
+<script>
+// 💡 カレンダーの初期設定（日本語化・ダークテーマ適用）
+flatpickr("#birthday", {
+    locale: "ja",         // 日本語化
+    dateFormat: "Y-m-d",  // データの形式（2026-06-04など）
+    maxDate: "today",     // 未来の日付は選べないようにする
+    disableMobile: "true" // スマホでも独自のダークカレンダーを強制表示
+});
+
+function fortuneTell() {
+    const birthdayInput = document.getElementById('birthday').value;
+    if (!birthdayInput) {
+        alert('運命の日（誕生日）を選択してください！');
+        return;
+    }
+
+    const date = new Date(birthdayInput);
+    const month = date.getMonth() + 1;
+    const day = date.getDate();
+
+    // 月と日を足して12で割った余りで霊獣を決定
+    const index = (month + day) % 12;
+
+    // 12種類の霊獣データ
+    const beasts = [
+        { name: "青龍 (せいりゅう)", desc: "東方を守護する恵みの巨龍。気高く誠実な心の持ち主で、常に成長を求める努力家です。周囲を率いる強い運気を持っています。" },
+        { name: "朱雀 (すざく)", desc: "南方を守護する情熱の火の鳥。圧倒的なカリスマ性と、逆境から何度でも蘇る不屈の精神を持っています。表現力豊かな人気者です。" },
+        { name: "白虎 (びゃっこ)", desc: "西方を守護する戦いと風の猛虎。果敢な行動力と鋭い直感の持ち主。嘘や曲がったことが大嫌いな、一本芯の通った熱い人です。" },
+        { name: "玄武 (げんぶ)", desc: "北方を守護する亀と蛇が合体した霊獣。圧倒的な防御力（忍耐力）と知恵を誇ります。冷静沈着で、周囲に抜群の安心感を与えます。" },
+        { name: "鳳凰 (ほうおう)", desc: "平和の訪れとともに現れる伝説 of 瑞鳥。優雅で慈悲深く、美しいものを愛するハイセンスな心の持ち主。あなたの周りには自然と人が集まります。" },
+        { name: "麒麟 (きりん)", desc: "才能豊かな傑物が生まれる前に現れるという仁徳の獣。温厚で争いを好まず、他人の幸せを心から願える聖人君子のようなタイプです。" },
+        { name: "九尾の狐 (きゅうびのきつね)", desc: "強大な霊力を持つ九つの尾の狐。頭の回転が非常に早く、ミステリアスな魅力で人を惹きつけます。人の本質を見抜く鋭い眼力があります。" },
+        { name: "ペガサス", desc: "天空を自由に駆ける翼を持った天馬。束縛を何よりも嫌い、ひらめきと感性だけで生きる自由人。あなたのアイデアは世界を驚かせます。" },
+        { name: "ユニコーン", desc: "純潔と気高さを象徴する一角獣。自分の信念やプライドをとても大切にするロマンチスト。純粋で嘘のない人間関係を築くのが得意です。" },
+        { name: "八咫烏 (やたがらす)", desc: "未来を導く三本足の神聖なカラス。先見の明があり、暗闇の中でも正しい道を見つけ出すナビゲーター。あなたの助言は多くの人を救います。" },
+        { name: "獏 (ばく)", desc: "悪夢を喰らい、人々に安らぎを与える霊獣。包容力バツグンで、他人の悩みやネガティブな感情を受け止めて癒やすメンタータイプです。" },
+        { name: "応龍 (おうりゅう)", desc: "数千年の時を経て翼を得た最強の龍。壮大なスケールで物事を考え、大きな成功を収める大器晩成型。無限の可能性を秘めています。" }
+    ];
+
+    const resultBeast = beasts[index];
+    document.getElementById('beastName').innerText = resultBeast.name;
+    document.getElementById('beastDesc').innerText = resultBeast.desc;
+    document.getElementById('result').style.display = 'block';
+}
+</script>
+
+</body>
+</html>
